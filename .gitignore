@@ -1,0 +1,68 @@
+class Dot:
+    mimo_shot = "T"
+    hit_shot = "X"
+    svob_dot = "O"
+    ship_dot = "#"
+    ship_cont = "○"
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        return (self.x == other.x) and (self.y == other.y)
+
+class Pole:
+    def __init__(self, pole = None):
+        self.pole = [[Dot.svob_dot] * 6 for _ in range(6)]
+
+    def print_pole(self):                                                       #print playing field
+        for i in range(7):
+            if i == 0:
+                i = " "
+            print (i, end = " ")
+        print()
+        for i in range(6):
+            for j in range (6):
+                if j == 0:
+                    print(i + 1, self.pole[i][j], end = " ")
+                else:
+                    print(self.pole[i][j], end = " ")
+            print()
+
+    def add_ship(self):
+        #чудо должно вытащить корабль из другого класса и поставить его на доску
+        chudo_help
+
+
+class Ship:
+
+    def __init__(self, x, y, size, comp, ship_dot = None):
+        self.x = x
+        self.y = y
+        self.size = size
+        self.comp = comp
+        ship_dot = []
+        if ship_dot is None:
+            ship_dot = []
+
+    def ship_tap(self):
+        if self.comp == "в":
+            if self.x and self.y < 7:
+                for _ in range (self.size):
+                    ship_dot.append([self.x, self.y])
+                    self.x += 1
+        elif self.comp == "г":
+            if self.x < 7 and self.y < 7:
+                for _ in range (self.size):
+                    ship_dot.append([self.x, self.y])
+                    self.y += 1
+        else:
+            print("Ошибка ввода")
+            return  "add_ship"                    #Сделать возврат на add_ship когда будет запрос данных для селф
+
+
+pole1 = Pole()
+pole1.print_pole()
+Ship1 = Ship(2, 2, 2, "в")
+print(Ship1.ship_tap())
