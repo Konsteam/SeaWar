@@ -13,14 +13,14 @@ class Dot:
         return (self.x == other.x) and (self.y == other.y)
 
 class Pole:
-    def __init__(self, ship_dot, ship_conturs, pole=None, ships=None, visible=False):
+    def __init__(self, ship, pole=None, ships=None, visible=False):
         self.pole = [[Dot.svob_dot] * 6 for _ in range(6)]
         if ships is None:
             ships = []
         self.ships = ships
-        self.ship_dot = ship_dot
+        self.ship_dot = ship
         self.visible = visible
-        self.ship_conturs = ship_conturs
+        self.ship_conturs = ship
         self.tap_ship = []
         self.shots = []
 
@@ -39,20 +39,18 @@ class Pole:
             print()
 
 
-    def add_ship(self, ship_dot, ship_conturs, visible=False):
+    def add_ship(self, ship, visible=True):
         try:
-            for _ in self.ship_dot:
-                if _ in self.ships or _ in self.ship_conturs or _.x < 0 or _.x > 5 or _.y < 0 or _.y > 5:
+            for self.ship_dot in self.ships:
+                if self.ship_dot in self.ships or self.ship_conturs in self.ships or self.ship_dot.x < 0 or self.ship_dot.x > 5 or self.ship_dot.y < 0 or self.ship_dot.y > 5:
                     raise IndexError
             self.ships = self.ships + self.ship_dot
-            if visible is False:
+            if visible is True:
                 for _ in self.ship_dot:
                     self.pole[_.x][_.y] = _.ship_dot
-                for _ in self.ship_conturs:
-                    self.ship_conturs = self.ship_conturs + [_]
-                return self.pole, self.ships, self.ship_conturs
+            self.ships.append(ship)
         except IndexError:
-            if visible is False:
+            if visible is True:
                 print("Ошибка расположения")
 
 class Ship:
@@ -91,24 +89,16 @@ ship1 = Ship(4, 4, 3, 1)
 ship1.ship_main()
 ship1.ship_cont(ship1.ship_main())
 pole1 = Pole(ship1.ship_main(),ship1.ship_cont(ship1.ship_main()))
-pole1.add_ship(ship1.ship_cont,ship1.ship_main)
+pole1.add_ship(ship1)
 pole1.print_pole()
 
 ship2 = Ship(2, 2, 2, 1)
 ship2.ship_main()
 ship2.ship_cont(ship2.ship_main())
-pole1 = Pole(ship2.ship_main(),ship2.ship_cont(ship2.ship_main()))
-pole1.add_ship(ship2.ship_cont,ship2.ship_main)
+pole1.add_ship(ship2)
 pole1.print_pole()
 
-ship3 = Ship(1, 6, 1, 1)
-ship3.ship_main()
-ship3.ship_cont(ship3.ship_main())
-pole1 = Pole(ship3.ship_main(),ship3.ship_cont(ship3.ship_main()))
-pole1.add_ship(ship3.ship_cont,ship3.ship_main)
-pole1.print_pole()
-
-if ship1 in pole1.ships:
+if ship2 in pole1.ships:
     print ("Есть такой корабль")
 else:
     print("Что-то не так")
