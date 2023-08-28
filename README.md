@@ -38,17 +38,20 @@ class Pole:
                     print(self.pole[i][j], end=" ")
             print()
 
-
-    def add_ship(self, ship, visible=True):
+    def add_ship (self, ship, visible=True):
         try:
-            for self.ship_dot in self.ships:
-                if self.ship_dot in self.ships or self.ship_conturs in self.ships or self.ship_dot.x < 0 or self.ship_dot.x > 5 or self.ship_dot.y < 0 or self.ship_dot.y > 5:
+            for dot in ship.ship_main():
+                if dot in ship.ship_cont(ship.ship_main()) or dot.x < 0 or dot.x > 5 or dot.y < 0 or dot.y > 5:
                     raise IndexError
             self.ships = self.ships + self.ship_dot
             if visible is True:
-                for _ in self.ship_dot:
-                    self.pole[_.x][_.y] = _.ship_dot
-            self.ships.append(ship)
+                for dot in ship.ship_main():
+                    self.pole[dot.x][dot.y] = dot.ship_dot
+                for dot_cont in self.ship_conturs:
+                    self.ship_conturs = self.ship_conturs + [dot_cont]
+                self.ships.append(ship)
+                return self.pole, self.ships, self.ship_conturs
+
         except IndexError:
             if visible is True:
                 print("Ошибка расположения")
@@ -69,20 +72,20 @@ class Ship:
     def ship_main(self):
         self.ship_dot = []
         if self.comp == 1:
-            for _ in range (self.size):
-                self.ship_dot = self.ship_dot + [Dot(self.x - 1  + _ , self.y - 1 )]
+            for dot in range (self.size):
+                self.ship_dot = self.ship_dot + [Dot(self.x - 1  + dot, self.y - 1 )]
         else:
-            for _ in range (self.size):
-                self.ship_dot = self.ship_dot + [Dot(self.x - 1, self.y - 1 + _)]
+            for dot in range (self.size):
+                self.ship_dot = self.ship_dot + [Dot(self.x - 1, self.y - 1 + dot)]
         return self.ship_dot
 
     def ship_cont(self, ship_dot):
         for _ in self.ship_dot:
-            for i in range ((_.x - 1), (_.x + 2)):
-                for j in range ((_.y - 1), (_.y + 2)):
+            for i in range ((self.x - 1), (self.x + 2)):
+                for j in range ((self.y - 1), (self.y + 2)):
                     if Dot (i, j) not in self.ship_contur and Dot (i, j) not in ship_dot and 0 <= i <= 5 and 0 <= j <= 5:
                         self.ship_contur = self.ship_contur + [Dot (i, j)]
-        return  self.ship_contur
+        return self.ship_contur
 
 
 ship1 = Ship(4, 4, 3, 1)
@@ -93,12 +96,14 @@ pole1.add_ship(ship1)
 pole1.print_pole()
 
 ship2 = Ship(2, 2, 2, 1)
-ship2.ship_main()
-ship2.ship_cont(ship2.ship_main())
 pole1.add_ship(ship2)
 pole1.print_pole()
 
-if ship2 in pole1.ships:
+ship3 = Ship(1, 1, 1, 2)
+pole1.add_ship(ship3)
+pole1.print_pole()
+
+if ship3 in pole1.ships:
     print ("Есть такой корабль")
 else:
     print("Что-то не так")
