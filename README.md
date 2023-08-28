@@ -38,6 +38,7 @@ class Pole:
                     print(self.pole[i][j], end=" ")
             print()
 
+
     def add_ship(self, ship_dot, ship_conturs, visible=False):
         try:
             for _ in self.ship_dot:
@@ -86,12 +87,28 @@ class Ship:
         return  self.ship_contur
 
 
-ship1 = Ship(1, 1, 3, 1)
+ship1 = Ship(4, 4, 3, 1)
 ship1.ship_main()
 ship1.ship_cont(ship1.ship_main())
 pole1 = Pole(ship1.ship_main(),ship1.ship_cont(ship1.ship_main()))
-pole1.print_pole()
-print(pole1.ship_conturs)
 pole1.add_ship(ship1.ship_cont,ship1.ship_main)
 pole1.print_pole()
 
+ship2 = Ship(2, 2, 2, 1)
+ship2.ship_main()
+ship2.ship_cont(ship2.ship_main())
+pole1 = Pole(ship2.ship_main(),ship2.ship_cont(ship2.ship_main()))
+pole1.add_ship(ship2.ship_cont,ship2.ship_main)
+pole1.print_pole()
+
+ship3 = Ship(1, 6, 1, 1)
+ship3.ship_main()
+ship3.ship_cont(ship3.ship_main())
+pole1 = Pole(ship3.ship_main(),ship3.ship_cont(ship3.ship_main()))
+pole1.add_ship(ship3.ship_cont,ship3.ship_main)
+pole1.print_pole()
+
+if ship1 in pole1.ships:
+    print ("Есть такой корабль")
+else:
+    print("Что-то не так")
