@@ -13,13 +13,14 @@ class Dot:
         return (self.x == other.x) and (self.y == other.y)
 
 class Pole:
-    def __init__(self, pole=None, ships=None, visible=False):
+    def __init__(self, ship_dot, ship_conturs, pole=None, ships=None, visible=False):
         self.pole = [[Dot.svob_dot] * 6 for _ in range(6)]
         if ships is None:
             ships = []
         self.ships = ships
+        self.ship_dot = ship_dot
         self.visible = visible
-        self.ship_conturs = []
+        self.ship_conturs = ship_conturs
         self.tap_ship = []
         self.shots = []
 
@@ -37,17 +38,16 @@ class Pole:
                     print(self.pole[i][j], end=" ")
             print()
 
-    def add_ship(self, ship_dot, ship, ship_contur, visible):
+    def add_ship(self, ship_dot, ship_conturs, visible=False):
         try:
-            for _ in ship_dot:
+            for _ in self.ship_dot:
                 if _ in self.ships or _ in self.ship_conturs or _.x < 0 or _.x > 5 or _.y < 0 or _.y > 5:
                     raise IndexError
-            self.ships = self.ships + ship_dot
-            self.tap_ship = self.tap_ship + [ship]
+            self.ships = self.ships + self.ship_dot
             if visible is False:
-                for _ in ship_dot:
+                for _ in self.ship_dot:
                     self.pole[_.x][_.y] = _.ship_dot
-                for _ in ship_contur:
+                for _ in self.ship_conturs:
                     self.ship_conturs = self.ship_conturs + [_]
                 return self.pole, self.ships, self.ship_conturs
         except IndexError:
@@ -69,7 +69,7 @@ class Ship:
 
     def ship_main(self):
         self.ship_dot = []
-        if self.comp == "1":
+        if self.comp == 1:
             for _ in range (self.size):
                 self.ship_dot = self.ship_dot + [Dot(self.x - 1  + _ , self.y - 1 )]
         else:
@@ -78,13 +78,20 @@ class Ship:
         return self.ship_dot
 
     def ship_cont(self, ship_dot):
-        for _ in ship_dot:
+        for _ in self.ship_dot:
             for i in range ((_.x - 1), (_.x + 2)):
                 for j in range ((_.y - 1), (_.y + 2)):
                     if Dot (i, j) not in self.ship_contur and Dot (i, j) not in ship_dot and 0 <= i <= 5 and 0 <= j <= 5:
                         self.ship_contur = self.ship_contur + [Dot (i, j)]
         return  self.ship_contur
 
-pole1 = Pole()
+
+ship1 = Ship(1, 1, 3, 1)
+ship1.ship_main()
+ship1.ship_cont(ship1.ship_main())
+pole1 = Pole(ship1.ship_main(),ship1.ship_cont(ship1.ship_main()))
+pole1.print_pole()
+print(pole1.ship_conturs)
+pole1.add_ship(ship1.ship_cont,ship1.ship_main)
 pole1.print_pole()
 
