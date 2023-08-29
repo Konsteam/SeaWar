@@ -38,13 +38,13 @@ class Pole:
         try:
             for dot in ship.ship_main():
                 if 5 < dot.x < 0 or 5 < dot.y < 0:
-                    if dot.x not in self.busy_dot or dot.y not in self.busy_dot:
-                        self.pole[dot.x][dot.y] = dot.ship_dot
-                        self.ships.append(ship)
-                        self.busy_dot.append(ship.ship_main())
-                        self.busy_dot.append(ship.ship_cont(ship.ship_main()))
-                raise IndexError
-                return self.pole, self.ships, self.busy_dot
+                    if dot.x in self.busy_dot or dot.y in self.busy_dot:
+                        raise IndexError
+                self.pole[dot.x][dot.y] = dot.ship_dot
+                self.ships.append(ship)
+                self.busy_dot.append(ship.ship_main())
+                self.busy_dot.append(ship.ship_cont(ship.ship_main()))
+            return self.pole, self.ships, self.busy_dot
         except IndexError:
             if visible is True:
                 print("Ошибка расположения")
@@ -86,7 +86,7 @@ pole1 = Pole(ship1.ship_main(),ship1.ship_cont(ship1.ship_main()))
 pole1.add_ship(ship1)
 pole1.print_pole()
 
-ship5 = Ship(3, 3, 3, 2)
+ship5 = Ship(1, 1, 3, 2)
 pole1.add_ship(ship5)
 pole1.print_pole()
 
