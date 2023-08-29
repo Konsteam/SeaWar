@@ -37,8 +37,8 @@ class Pole:
     def add_ship (self, ship, visible=True):
         try:
             for dot in ship.ship_main():
-                if 5 < dot.x < 0 and 5 < dot.y < 0:
-                    if dot.x not in self.dot and dot.y not in self.busy_dot:
+                if 5 < dot.x < 0 or 5 < dot.y < 0:
+                    if dot.x not in self.busy_dot or dot.y not in self.busy_dot:
                         self.pole[dot.x][dot.y] = dot.ship_dot
                         self.ships.append(ship)
                         self.busy_dot.append(ship.ship_main())
@@ -66,10 +66,10 @@ class Ship:
         self.ship_dot = []
         if self.comp == 1:
             for dot in range (self.size):
-                self.ship_dot = self.ship_dot + [Dot(self.x - 1  + dot, self.y - 1 )]
+                self.ship_dot.append(Dot(self.x - 1  + dot, self.y - 1 ))
         else:
             for dot in range (self.size):
-                self.ship_dot = self.ship_dot + [Dot(self.x - 1, self.y - 1 + dot)]
+                self.ship_dot.append(Dot(self.x - 1, self.y - 1 + dot))
         return self.ship_dot
 
     def ship_cont(self, ship_dot):
