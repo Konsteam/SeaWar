@@ -14,16 +14,11 @@ class Dot:
 
 
 class Pole:
-    def __init__(self, ship, pole=None, ships=None, visible=False):
+    def __init__(self, ship, visible=False):
         self.pole = [[Dot.svob_dot] * 6 for _ in range(6)]
-        if ships is None:
-            ships = []
-        self.ships = ships
-        self.ship_dot = ship
+        self.ships = []
+        self.busy_dot = []
         self.visible = visible
-        self.ship_conturs = ship
-        self.tap_ship = []
-        self.shots = []
 
     def print_pole(self):                                                       #print playing field
         for i in range(7):
@@ -42,16 +37,14 @@ class Pole:
     def add_ship (self, ship, visible=True):
         try:
             for dot in ship.ship_main():
-                if dot in self.ships or dot.x < 0 or dot.x > 5 or dot.y < 0 or dot.y > 5:
-                    raise IndexError
-            self.ships = self.ships + self.ship_dot
-            if visible is True:
-                for dot in ship.ship_main():
-                    self.pole[dot.x][dot.y] = dot.ship_dot
-                for dot_cont in self.ship_conturs:
-                    self.ship_conturs = self.ship_conturs + [dot_cont]
-                self.ships.append(ship)
-                return self.pole, self.ships, self.ship_conturs
+                if 5 < dot.x < 0 and 5 < dot.y < 0:
+                    if dot.x not in self.dot and dot.y not in self.busy_dot:
+                        self.pole[dot.x][dot.y] = dot.ship_dot
+                        self.ships.append(ship)
+                        self.busy_dot.append(ship.ship_main())
+                        self.busy_dot.append(ship.ship_cont(ship.ship_main()))
+                raise IndexError
+                return self.pole, self.ships, self.busy_dot
         except IndexError:
             if visible is True:
                 print("Ошибка расположения")
@@ -88,9 +81,7 @@ class Ship:
         return self.ship_contur
 
 
-ship1 = Ship(4, 4, 3, 1)
-ship1.ship_main()
-ship1.ship_cont(ship1.ship_main())
+ship1 = Ship(4, 4, 2, 1)
 pole1 = Pole(ship1.ship_main(),ship1.ship_cont(ship1.ship_main()))
 pole1.add_ship(ship1)
 pole1.print_pole()
