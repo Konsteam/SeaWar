@@ -37,13 +37,13 @@ class Pole:
     def add_ship (self, ship, visible=True):
         try:
             for dot in ship.ship_main():
-                if 5 < dot.x < 0 or 5 < dot.y < 0:
-                    if dot.x in self.busy_dot or dot.y in self.busy_dot:
-                        raise IndexError
-                self.pole[dot.x][dot.y] = dot.ship_dot
-                self.ships.append(ship)
-                self.busy_dot.append(ship.ship_main())
-                self.busy_dot.append(ship.ship_cont(ship.ship_main()))
+                if dot in self.busy_dot or dot.x < 0 or dot.x > 5 or dot.y < 0 or dot.y > 5:
+                    raise IndexError
+            for dot in ship.ship_main():
+                    self.pole[dot.x][dot.y] = dot.ship_dot
+            self.ships.append(ship)
+            self.busy_dot = self.busy_dot + ship.ship_main()
+            self.busy_dot = self.busy_dot + ship.ship_cont(ship.ship_main())
             return self.pole, self.ships, self.busy_dot
         except IndexError:
             if visible is True:
@@ -81,13 +81,34 @@ class Ship:
         return self.ship_contur
 
 
-ship1 = Ship(4, 4, 2, 1)
+ship1 = Ship(1, 1, 3, 1)
 pole1 = Pole(ship1.ship_main(),ship1.ship_cont(ship1.ship_main()))
 pole1.add_ship(ship1)
 pole1.print_pole()
+print(pole1.busy_dot)
 
-ship5 = Ship(1, 1, 3, 2)
+ship2 = Ship(1, 3, 2, 2)
+pole1.add_ship(ship2)
+pole1.print_pole()
+
+ship3 = Ship(1, 6, 2, 1)
+pole1.add_ship(ship3)
+pole1.print_pole()
+
+ship4 = Ship(3, 3, 1, 2)
+pole1.add_ship(ship4)
+pole1.print_pole()
+
+ship5 = Ship(6, 1, 1, 2)
 pole1.add_ship(ship5)
+pole1.print_pole()
+
+ship6 = Ship(6, 6, 1, 2)
+pole1.add_ship(ship6)
+pole1.print_pole()
+
+ship7 = Ship(6, 4, 1, 2)
+pole1.add_ship(ship7)
 pole1.print_pole()
 
 if ship5 in pole1.ships:
