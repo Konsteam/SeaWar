@@ -3,7 +3,7 @@ class Dot:
     hit_shot = "X"
     svob_dot = "0"
     ship_dot = "#"
-    ship_cont = "◘"
+    ship_cont = "♦"
 
     def __init__(self, x, y):
         self.x = x
@@ -18,6 +18,7 @@ class Pole:
         self.pole = [[Dot.svob_dot] * 6 for _ in range(6)]
         self.ships = []
         self.busy_dot = []
+        self.shots = []
         self.visible = visible
 
     def print_pole(self):                                                       #print playing field
@@ -49,6 +50,32 @@ class Pole:
             if visible is True:
                 print("Ошибка расположения")
 
+    def shot(self, x, y, visible=True):
+        try:
+            shot = Dot ((x-1),(y-1))
+            if shot.x < 0 or (x - 1) > 5 or (y  - 1) < 0 or (y - 1) > 5 or Dot ((x-1),(y-1)) in self.shots :
+                raise IndexError
+            try:                                          #раскрыть список кораблей
+                for ship in self.ships:                             #запросить точки каждого корабля
+                    for dot in ship.ship_main():
+                        if shot in ship.ship_main() :                           #если точка выстрела оказывается в списке точек корабля
+                            self.pole[(x-1)][(y-1)] = Dot.hit_shot          #поставить знак попадания по кораблю
+                            ship.ship_hp -= 1
+                            if ship.ship_hp == 0:
+                                for dot in ship.ship_contur:
+                                    self.pole[dot.x][dot.y] = Dot.ship_cont
+                            raise StopIteration
+                        else:                                                               #если нет
+                            self.pole[(x-1)][(y-1)] = Dot.mimo_shot     #поставить знак промаха
+            except StopIteration:
+                pass
+            self.shots = self.shots + [Dot((x-1),(y-1))]
+        except IndexError:
+            if visible is True:
+                print("Ошибка выстрела")
+        return self.shots
+
+
 class Ship:
 
     def __init__(self, x, y, size, comp, ship_dot=None):
@@ -77,41 +104,24 @@ class Ship:
             for i in range (dot.x - 1, dot.x + 2):
                 for j in range (dot.y - 1, dot.y + 2):
                     if Dot (i, j) not in self.ship_contur and Dot (i, j) not in self.ship_dot and 0 <= i <= 5 and 0 <= j <= 5:
-                        self.ship_contur.append(Dot (i, j))
+                        self.ship_contur = self.ship_contur + [Dot (i, j)]
         return self.ship_contur
-
+ 
 
 ship1 = Ship(1, 1, 3, 1)
 pole1 = Pole(ship1.ship_main(),ship1.ship_cont(ship1.ship_main()))
 pole1.add_ship(ship1)
 pole1.print_pole()
-print(pole1.busy_dot)
 
 ship2 = Ship(1, 3, 2, 2)
 pole1.add_ship(ship2)
 pole1.print_pole()
 
-ship3 = Ship(1, 6, 2, 1)
+ship3 = Ship(1, 6, 1, 1)
 pole1.add_ship(ship3)
 pole1.print_pole()
 
-ship4 = Ship(3, 3, 1, 2)
-pole1.add_ship(ship4)
+pole1.shot(1,3)
+pole1.shot(1,4)
+pole1.shot(1,6)
 pole1.print_pole()
-
-ship5 = Ship(6, 1, 1, 2)
-pole1.add_ship(ship5)
-pole1.print_pole()
-
-ship6 = Ship(6, 6, 1, 2)
-pole1.add_ship(ship6)
-pole1.print_pole()
-
-ship7 = Ship(6, 4, 1, 2)
-pole1.add_ship(ship7)
-pole1.print_pole()
-
-if ship5 in pole1.ships:
-    print ("Есть такой корабль")
-else:
-    print("Что-то не так")
