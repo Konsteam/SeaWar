@@ -129,6 +129,8 @@ class Game:
         self.name = 0
 
     def gen_human_pole(self):
+        pole_H = Pole
+        pole_H.print_pole()
         for ship in self.ship_size_list:
             if self.ship_size_list[ship] > 1:
                 self.ship_name[self.name] = Ship ((int(input("Строка: "))),(int(input("Столбец: "))),\
