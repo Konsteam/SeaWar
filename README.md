@@ -14,7 +14,7 @@ class Dot:
 
 
 class Pole:
-    def __init__(self, ship, visible=False):
+    def __init__(self, visible=False):
         self.pole = [[Dot.svob_dot] * 6 for _ in range(6)]
         self.ships = []
         self.busy_dot = []
@@ -108,8 +108,8 @@ class Ship:
         return self.ship_contur
 
 class Player:
-    def __init__(self, player):
-        self.player = player
+    def __init__(self,):
+        self.player = 1
 
     def ask (sefl):
         try:
@@ -123,25 +123,26 @@ class Player:
 
 class Game:
     def __init__(self):
-        self.player = player
         self.ship_size_list = [3, 2, 2, 1, 1, 1, 1]
-        self.ship_name = ["ship1","ship2","ship3","ship4","ship5","ship6","ship7"]
         self.name = 0
 
     def gen_human_pole(self):
-        pole_H = Pole
+        pole_H = Pole()
         pole_H.print_pole()
-        for ship in self.ship_size_list:
-            if self.ship_size_list[ship] > 1:
-                self.ship_name[self.name] = Ship ((int(input("Строка: "))),(int(input("Столбец: "))),\
-                                        self.ship_size_list[self.ships], (int(input("Положение: "))))
+        while self.name != 7:
+            x = int(input("Строка: "))
+            y = int(input("Столбец: "))
+            size = self.ship_size_list[0]
+            self.ship_size_list.pop(0)
+            if size == 1:
+                comp = 1
             else:
-                self.ship_name[self.name] = Ship((int(input("Строка: "))), (int(input("Столбец: "))), \
-                                                 self.ship_size_list[self.ships], 1)
-            pole_H.add_ship(self.ship_name[self.name])
+                comp = int(input("положение: "))
+            ship = Ship(x,y,size,comp)
+            pole_H.add_ship(ship)
             self.name += 1
-        pole_H.print_pole()
+            pole_H.print_pole()
 
 
-g = Game
+g = Game()
 g.gen_human_pole()
