@@ -1,3 +1,6 @@
+import random
+
+
 class Dot:
     mimo_shot = "T"
     hit_shot = "X"
@@ -49,6 +52,8 @@ class Pole:
         except IndexError:
             if visible is True:
                 print("Ошибка расположения")
+                return False
+        return True
 
     def shot(self, x, y, visible=True):
         try:
@@ -129,20 +134,49 @@ class Game:
     def gen_human_pole(self):
         pole_H = Pole()
         pole_H.print_pole()
-        while self.name != 7:
+        ship_count = 0
+        while ship_count != 7:
             x = int(input("Строка: "))
             y = int(input("Столбец: "))
-            size = self.ship_size_list[0]
-            self.ship_size_list.pop(0)
+            size = self.ship_size_list[ship_count]
             if size == 1:
                 comp = 1
             else:
                 comp = int(input("положение: "))
             ship = Ship(x,y,size,comp)
-            pole_H.add_ship(ship)
-            self.name += 1
-            pole_H.print_pole()
+            if bool(pole_H.add_ship(ship)) == True:
+                ship_count += 1
+                pole_H.print_pole()
+        else:
+            print( "Начинаем игру!")
+            return pole_H
 
+    def gen_ii_pole(self):
+        pole_ii = Pole()
+        ship_count = 0
+        ship_count2 = 0
+        while ship_count2 != 7:
+            x = random.randint(1,6)
+            y = random.randint(1,6)
+            size = self.ship_size_list[ship_count2]
+            if size == 1:
+                comp = 1
+            else:
+                comp = random.randint(1,2)
+            ship = Ship(x,y,size,comp)
+            if bool(pole_ii.add_ship(ship)) == True:
+                ship_count2 += 1
+            else:
+                ship_count += 1
+                if ship_count > 100:
+                    ship_count = 0
+                    ship_count2 = 0
+                    pole_ii = Pole()
+                    return g.gen_ii_pole()
+        else:
+            print("Начинаем игру!")
+            return pole_ii
 
 g = Game()
-g.gen_human_pole()
+g.gen_ii_pole()
+pole_ii.print_pole()
