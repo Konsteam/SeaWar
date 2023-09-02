@@ -58,31 +58,35 @@ class Pole:
             if visible is True:
                 print("Ошибка расположения")
                 return False
-        return True
+        return self.ships_hp
 
-    def shot(self, x, y, visible=True):
+    def shot(self, cord, visible=True):
         try:
-            shot = Dot((x - 1), (y - 1))
-            if shot.x < 0 or (x - 1) > 5 or (y - 1) < 0 or (y - 1) > 5 or Dot((x - 1), (y - 1)) in self.shots:
+            shot = Dot((cord.x - 1), (cord.y - 1))
+            if shot.x < 0 or (cord.x - 1) > 5 or (cord.y - 1) < 0 or (cord.y - 1) > 5 or Dot((cord.x - 1), (cord.y - 1)) in self.shots or \
+                    self.pole[(cord.x - 1)][(cord.y - 1)] == Dot.ship_cont:
                 raise IndexError
-            try:                                                                        # раскрыть список кораблей
+            try:                                                                                 # раскрыть список кораблей
                 for ship in self.ships:                                                 # запросить точки каждого корабля
                     for dot in ship.ship_main():
                         if shot in ship.ship_main():                                    # если точка выстрела оказывается в списке точек корабля
-                            self.pole[(x - 1)][(y - 1)] = Dot.hit_shot                  # поставить знак попадания по кораблю
+                            self.pole[(cord.x - 1)][(cord.y - 1)] = Dot.hit_shot                  # поставить знак попадания по кораблю
+                            self.ships_hp -= 1
                             ship.ship_hp -= 1
                             if ship.ship_hp == 0:
                                 for dot in ship.ship_contur:
                                     self.pole[dot.x][dot.y] = Dot.ship_cont
+                                    self.shots = self.shots + [Dot((cord.x - 1), (cord.y - 1))]
                             raise StopIteration
-                        else:                                                           # если нет
-                            self.pole[(x - 1)][(y - 1)] = Dot.mimo_shot                  # поставить знак промаха
+                        else:                                                                                               # если нет
+                            self.pole[(cord.x - 1)][(cord.y - 1)] = Dot.mimo_shot                  # поставить знак промаха
+                            self.shots = self.shots + [Dot((cord.x - 1), (cord.y - 1))]
             except StopIteration:
                 pass
-            self.shots = self.shots + [Dot((x - 1), (y - 1))]
         except IndexError:
             if visible is True:
                 print("Ошибка выстрела")
+                raise IndexError
         return self.shots
 
 class Ship:
@@ -121,12 +125,13 @@ class Player:
         self.your_board = your_board
 
     def ask_shot (sefl):
+        cord = Dot
         try:
             x = int(input("строка"))
             y = int(input("столбец"))
         except TypeError:
             print("Ошибка ввода")
-        return Dot(x, y)
+        return cord(x, y)
 
 class II:
     def __init__(self, my_board, your_board):
@@ -134,9 +139,10 @@ class II:
         self.your_board = your_board
 
     def ask_shot(sefl):
+        cord = Dot
         x = random.randint(1,6)
         y = random.randint(1,6)
-        return Dot(x, y)
+        return cord(x, y)
 
 class Game:
     def __init__(self, shot=None):
@@ -195,31 +201,47 @@ class Game:
         print("Начинаем игру!!!")
 
     def gaming (self):
+        ai = II(self.pole_ii, self.pole_h)
         pl = Player(self.pole_h,self.pole_ii)
-        ai = Player(self.pole_ii,self.pole_h)
         while True:
-            pl.ask_shot()
-            self.pole_ii.shot(pl.ask_shot().x, pl.ask_shot().y)
+            while True:
+                try:
+                    self.pole_ii.shot(pl.ask_shot())
+                    break
+                except IndexError:
+                    print("Неверные координаты")
+                    self.pole_ii.print_pole()
+                except ValueError:
+                    print("Неверный выстрел")
+                    self.pole_ii.print_pole()
             print("Поле ИИ")
             self.pole_ii.print_pole()
-            self.pole_h.shot(ai.ask_shot().x, ai.ask_shot().y)
+            while True:
+                try:
+                    self.pole_h.shot(ai.ask_shot(), visible=False)
+                    break
+                except IndexError:
+                    None
+                except ValueError:
+                    None
             print("Поле игрока")
             self.pole_h.print_pole()
-            if pl.your_board.ships_hp == 0 or ai.your_board.ships_hp == 0:
+            if self.pole_ii.ships_hp == 0:
+                print("Восстания машин не будет!")
+                break
+            if self.pole_h.ships_hp == 0:
+                print("Человечество будет уничтожено!")
                 break
 
 g = Game()
+print( """Напутствия перед игрой:
+Корабли надо расставлять на расстоянии 1 клетки друг от друга
+Размер кораблей при расстановке задан в следующем порядке:
+3-х полубный 2-палубный 2-палубный 1-палубный 1-палубный 1-палубный 1-палубный
+для горизонтального располжения корабля значение расположения 2
+для вертикального располжения корабля значение расположения 1
+Против Вас будет играть ИИ
+Пебеждает тот кто первым уничтожит все корабли проивника
+                """)
 g.star(g.gen_human_pole(),g.gen_ii_pole())
 g.gaming()
-
-
-#Напутствия перед игрой:
-#Корабли надо расставлять на расстоянии 1 клетки друг от друга
-#Корабли размер кораблей задан в следующем порядке:
-#3-х полубный 2-палубный 2-палубный 1-палубный 1-палубный 1-палубный 1-палубный
-#для горизонтального располжения корабля значение расположения 2
-#для вертикального располжения корабля значение расположения 1
-#Против Вас будет играть ИИ
-#Пебеждает тот кто первым уничтожит все корабли проивника
-
-
