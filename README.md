@@ -57,7 +57,7 @@ class Pole:
         except IndexError:
             if visible is True:
                 print("Ошибка расположения")
-                return False
+            return False
         return self.ships_hp
 
     def shot(self, cord, visible=True):
